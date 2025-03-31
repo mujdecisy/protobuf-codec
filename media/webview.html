@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protobuf Codec</title>
+</head>
+
+<body>
+    <div style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <h3>Decoded</h3>
+            <textarea id="decoded" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <button onclick="sendMessage('encode')">ENCODE &gt;&gt;</button>
+            </div>
+        </div>
+        <div style="flex: 1;">
+            <h3>Protobuf</h3>
+            <textarea id="protobuf" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+        </div>
+        <div style="flex: 1;">
+            <h3>Encoded</h3>
+            <textarea id="encoded" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+            <div style="display: flex; justify-content: center; margin-top: 10px;">
+                <button onclick="sendMessage('decode')">&lt;&lt;DECODE</button>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <pre id="console" style="background-color: #ddd; padding: 10px; border: 1px solid #ccc; color: #000;">No errors</pre>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        const decoded = document.getElementById('decoded');
+        const protobuf = document.getElementById('protobuf');
+        const encoded = document.getElementById('encoded');
+        const consoleElement = document.getElementById('console');
+
+        function sendMessage(command) {
+            vscode.postMessage({
+                command: command,
+                data: {
+                    decoded: decoded.value,
+                    protobuf: protobuf.value,
+                    encoded: encoded.value
+                }
+            });
+        }
+
+        window.addEventListener('message', event => {
+            const message = event.data;
+            consoleElement.innerText = message.message;
+            encoded.value = message.data.encoded;
+            decoded.value = message.data.decoded;
+            protobuf.value = message.data.protobuf;
+        });
+    </script>
+</body>
+
+</html>
