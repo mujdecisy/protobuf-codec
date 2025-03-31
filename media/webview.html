@@ -19,6 +19,7 @@
         <div style="flex: 1;">
             <h3>Protobuf</h3>
             <textarea id="protobuf" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+            <input type="text" id="messageType" placeholder="enter message type" style="width: 100%; margin-top: 10px;" />
         </div>
         <div style="flex: 1;">
             <h3>Encoded</h3>
@@ -37,6 +38,7 @@
         const decoded = document.getElementById('decoded');
         const protobuf = document.getElementById('protobuf');
         const encoded = document.getElementById('encoded');
+        const messageType = document.getElementById('messageType');
         const consoleElement = document.getElementById('console');
 
         function sendMessage(command) {
@@ -45,7 +47,8 @@
                 data: {
                     decoded: decoded.value,
                     protobuf: protobuf.value,
-                    encoded: encoded.value
+                    encoded: encoded.value,
+                    messageType: messageType.value
                 }
             });
         }
@@ -56,6 +59,7 @@
             encoded.value = message.data.encoded;
             decoded.value = message.data.decoded;
             protobuf.value = message.data.protobuf;
+            messageType.value = message.data.messageType;
         });
     </script>
 </body>

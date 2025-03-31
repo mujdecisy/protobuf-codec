@@ -42,9 +42,9 @@ function activate(context) {
                                 return;
                             }
 
-                            const firstMessage = message.data.protobuf.match(/message\s+(\w+)/)?.[1];
+                            const messageTypeStr = message.data.messageType;
                             
-                            if (!firstMessage) {
+                            if (!messageTypeStr) {
                                 panel.webview.postMessage({
                                     message: 'No message found in protobuf',
                                     data: message.data
@@ -52,7 +52,7 @@ function activate(context) {
                                 return;
                             }
 
-                            const messageType = protoParseResult.root.lookupType(firstMessage);
+                            const messageType = protoParseResult.root.lookupType(messageTypeStr);
 
                             const decoded = JSON.parse(message.data.decoded)
 
@@ -76,12 +76,61 @@ function activate(context) {
                                 data: {
                                     encoded: messageStr,
                                     protobuf: message.data.protobuf,
-                                    decoded: message.data.decoded
+                                    decoded: message.data.decoded,
+                                    messageType: message.data.messageType
                                 }
                             });
                             return;
                         case 'decode':
-                            panel.webview.postMessage(`Decoding: ${messageStr}`);
+                            const protoParseResultDecode = protobuf.parse(message.data.protobuf);
+
+                            if (!protoParseResultDecode) {
+                                panel.webview.postMessage({
+                                    message: 'No root found in protobuf',
+                                    data: message.data
+                                });
+                                return;
+                            }
+
+                            const messageTypeStrDecode = message.data.messageType;
+
+                            if (!messageTypeStrDecode) {
+                                panel.webview.postMessage({
+                                    message: 'No message found in protobuf',
+                                    data: message.data
+                                });
+                                return;
+                            }
+
+                            const messageTypeDecode = protoParseResultDecode.root.lookupType(messageTypeStrDecode);
+
+                            const encodedBytes = Buffer.from(message.data.encoded, 'base64');
+                            let decodedMessage;
+                            try {
+                                decodedMessage = messageTypeDecode.decode(encodedBytes);
+                            } catch (e) {
+                                panel.webview.postMessage({
+                                    message: 'Invalid encoded item',
+                                    data: message.data
+                                });
+                                return;
+                            }
+                            const decodedObject = messageTypeDecode.toObject(decodedMessage, {
+                                enums: String,
+                                longs: String,
+                                bytes: String,
+                                defaults: true
+                            });
+
+                            panel.webview.postMessage({
+                                message: 'Decoded successfully',
+                                data: {
+                                    encoded: message.data.encoded,
+                                    protobuf: message.data.protobuf,
+                                    decoded: JSON.stringify(decodedObject, null, 2),
+                                    messageType: message.data.messageType
+                                }
+                            });
                             return;
                     }
                 },
