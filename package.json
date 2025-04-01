@@ -1,8 +1,9 @@
 {
   "name": "protobuf-codec",
   "displayName": "Protobuf Codec",
-  "description": "marshall/unmarshal for protobuf",
+  "description": "Protocol Buffers Coder Decoder for VSCode",
   "version": "0.0.1",
+  "icon": "assets/logo.jpeg",
   "engines": {
     "vscode": "^1.98.0"
   },

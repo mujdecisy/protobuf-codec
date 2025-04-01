@@ -8,29 +8,34 @@
 </head>
 
 <body>
-    <div style="display: flex; gap: 10px;">
+    <div style="text-align: center; border-bottom: 2px solid #ccc; padding: 2px; margin-bottom: 5px;">
+        <h1>Protocol Buffer Coder Decoder</h1>
+    </div>
+    <div style="display: flex; gap: 7px;">
         <div style="flex: 1;">
             <h3>Decoded</h3>
-            <textarea id="decoded" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+            <textarea id="decoded" style="width: 100%; resize: none; overflow: auto;" rows="20" oninput="saveInputValues()"></textarea>
             <div style="display: flex; justify-content: center; margin-top: 10px;">
                 <button onclick="sendMessage('encode')">ENCODE &gt;&gt;</button>
             </div>
         </div>
         <div style="flex: 1;">
             <h3>Protobuf</h3>
-            <textarea id="protobuf" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
-            <input type="text" id="messageType" placeholder="enter message type" style="width: 100%; margin-top: 10px;" />
+            <textarea id="protobuf" style="width: 100%; resize: none; overflow: auto;" rows="20" oninput="saveInputValues()"></textarea>
+            <input type="text" id="messageType" placeholder="enter message type"
+                style="width: 100%; margin-top: 10px;" />
         </div>
         <div style="flex: 1;">
             <h3>Encoded</h3>
-            <textarea id="encoded" style="width: 100%; resize: none; overflow: auto;" rows="12"></textarea>
+            <textarea id="encoded" style="width: 100%; resize: none; overflow: auto;" rows="20" oninput="saveInputValues()"></textarea>
             <div style="display: flex; justify-content: center; margin-top: 10px;">
                 <button onclick="sendMessage('decode')">&lt;&lt;DECODE</button>
             </div>
         </div>
     </div>
     <div style="margin-top: 10px;">
-        <pre id="console" style="background-color: #ddd; padding: 10px; border: 1px solid #ccc; color: #000;">No errors</pre>
+        <pre id="console"
+            style="background-color: #ddd; padding: 10px; border: 1px solid #ccc; color: #000;">No errors</pre>
     </div>
 
     <script>
@@ -60,7 +65,35 @@
             decoded.value = message.data.decoded;
             protobuf.value = message.data.protobuf;
             messageType.value = message.data.messageType;
+
+            saveInputValues();
         });
+
+        window.addEventListener('load', () => {
+            const savedState = vscode.getState();
+            if (savedState) {
+                const inputValues = savedState.inputValues;
+                if (inputValues) {
+                    decoded.value = inputValues.decoded || '';
+                    protobuf.value = inputValues.protobuf || '';
+                    encoded.value = inputValues.encoded || '';
+                    messageType.value = inputValues.messageType || '';
+                    consoleElement.innerText = inputValues.consoleElement || 'No errors';
+                }
+            }
+        });
+
+        function saveInputValues() {
+            const inputValues = {
+                decoded: decoded.value,
+                protobuf: protobuf.value,
+                encoded: encoded.value,
+                messageType: messageType.value,
+                consoleElement: consoleElement.innerText
+            }
+
+            vscode.setState({ inputValues });
+        }
     </script>
 </body>
 
