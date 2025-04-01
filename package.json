@@ -35,5 +35,9 @@
   },
   "dependencies": {
     "protobufjs": "^7.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mujdecisy/protobuf-codec"
   }
 }
