@@ -67,9 +67,7 @@ function activate(context) {
                           
                             const protoMessage = messageType.create(decoded);
                             const protoMessageBytes = messageType.encode(protoMessage).finish();
-
-                            const messageStr = Buffer.from(new Uint8Array(protoMessageBytes))
-                                .toString('base64')
+                            const messageStr = Buffer.from(protoMessageBytes).toString('utf8');
 
                             panel.webview.postMessage({
                                 message: 'Encoded successfully',
@@ -104,7 +102,7 @@ function activate(context) {
 
                             const messageTypeDecode = protoParseResultDecode.root.lookupType(messageTypeStrDecode);
 
-                            const encodedBytes = Buffer.from(message.data.encoded, 'base64');
+                            const encodedBytes = Buffer.from(message.data.encoded, 'utf8');
                             let decodedMessage;
                             try {
                                 decodedMessage = messageTypeDecode.decode(encodedBytes);

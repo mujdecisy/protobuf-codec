@@ -20,6 +20,39 @@ This is a simple protocol buffer coder decoder for vscode. It can be used to enc
 1. Click the `Decode` button to decode the bytes to JSON.
 1. See the decoded JSON message in the `Decoded` text area.
 
+## Example
+
+```proto
+syntax = "proto3";
+
+message Person {
+    int32 id = 1;
+    string name = 2;
+}
+
+message Car {
+    string plateNumber = 1;
+    string brand = 2;
+    string model = 3;
+    string color = 4;
+    Person owner = 5;
+}
+```
+
+```json
+{
+  "plateNumber": "1234",
+  "brand": "Toyota",
+  "model": "Corolla",
+  "color": "Red",
+  "owner": {
+    "id": 1,
+    "name": "John Doe"
+  }
+}
+```
+
+
 -----
 
 Contact the developer <br/>
